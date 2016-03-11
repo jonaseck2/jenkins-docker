@@ -1,0 +1,4 @@
+httpasswd:
+  image: registry:2
+  entrypoint: htpasswd
+  command: '-Bbn user passwordHere'

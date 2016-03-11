@@ -1,0 +1,27 @@
+registry:
+  image: registry:2
+  ports:
+   - 5000:5000
+  volumes:
+   - /etc/letsencrypt:/etc/letsencrypt
+   - ./registry/htpasswd:/auth/htpasswd
+  environment:
+   - REGISTRY_HTTP_TLS_CERTIFICATE=/etc/letsencrypt/live/<your domain here>/fullchain.pem
+   - REGISTRY_HTTP_TLS_KEY=/etc/letsencrypt/live/<your domain here>/privkey.pem
+   - REGISTRY_AUTH=htpasswd
+   - REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd
+   - REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm
+jenkins:
+  build: jenkins
+  user: root
+  links:
+   - registry
+  ports:
+   - 8181:8080
+   - 50000:50000
+  volumes:
+   - /var/jenkins:/var/jenkins_home
+   - /var/run/docker.sock:/var/run/docker.sock
+   - /usr/bin/docker:/usr/bin/docker
+   - /usr/local/bin/docker-compose:/usr/local/bin/docker-compose
+
